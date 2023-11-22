@@ -12,6 +12,11 @@ def LaplTrLNFastD(u,v):#direct integration
     res=np.sum(np.exp(-s)*dt_mult,axis=0)
     return res
 
+def LaplTrLNODE2(u,v0):
+    V0=1.0/v0
+    def ode(V,t):return V0*np.exp(0.5/V)/V
+    y=odeint(ode,V0,u).T
+    return np.exp(V0-y[0])
 
 sp.init_printing()
 μ,ξ,w,d,k,t,x,y,p,m,v,q,r,s,z = sp.symbols('μ,ξ,w,d,k,t,x,y,p,m,v,q,r,s,z')
@@ -53,6 +58,13 @@ def CM(rm,i):
         expr=expr.subs(x**n,rm(n))
     return sp.simplify(expr)
 
+def CMgenerator(rm,is_MGF=False):
+    '''
+    returns the function generating central moments for given MGF or raw moments generator
+    '''
+    generator=RMgenerator(rm) if is_MGF else rm
+    return lambda i:CM(generator,i)
+
 def DRM(MGF,i):
     '''
     symbolic function returns differential of i-th (start from 1) raw moment
@@ -85,4 +97,4 @@ def DCM(MGF,i):
     return sp.simplify(sp.diff(expr,dU,1).subs(dU,0))
 
 def DCMgenerator(MGF):
-    return lambda i:DCM(func,i)
+    return lambda i:DCM(MGF,i)
