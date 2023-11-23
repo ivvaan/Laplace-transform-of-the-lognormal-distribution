@@ -1,16 +1,23 @@
 #basic functions 
-int_step=5.5/512.0
-t_nodes=np.arange(-150.5*int_step,151.5*int_step,int_step)[:,None]
-sinh_t=0.5*np.pi*np.sinh(t_nodes)
-sinhsinh_t=np.sinh(sinh_t)
-sinhsinh_t2=sinhsinh_t**2
-dt_mult=0.5*np.pi*(int_step/np.sqrt(np.pi))*np.cosh(sinh_t)*np.cosh(t_nodes)
-max_exp=int(np.finfo(np.float64).maxexp*np.log(2.))            
+def LaplTrLNIntegrFuncFactory(step=5.5/512.0,n_steps=300):
+    bound=(n_steps-1.0)/2.0
+    t_nodes=np.arange(-bound*step,(bound+0.5)*step,step)[:,None]#symmetric integration points without 0
+    sinh_t=0.5*np.pi*np.sinh(t_nodes)
+    sinhsinh_t=np.sinh(sinh_t)
+    sinhsinh_t2=sinhsinh_t**2
+    dt_mult=0.5*np.pi*(step/np.sqrt(np.pi))*np.cosh(sinh_t)*np.cosh(t_nodes)
+    max_exp=int(np.finfo(np.float64).maxexp*np.log(2.))            
 
-def LaplTrLNFastD(u,v):#direct integration
-    s=np.exp(np.sqrt(2.0*v)*sinhsinh_t)*np.atleast_1d(u)[None,:]+sinhsinh_t2
-    res=np.sum(np.exp(-s)*dt_mult,axis=0)
-    return res
+    def LaplTrLN(u,v):#direct integration
+        '''
+        fast version of direct integration
+        '''
+        s=np.exp(np.sqrt(2.0*v)*sinhsinh_t)*np.atleast_1d(u)[None,:]+sinhsinh_t2
+        res=np.sum(np.exp(-s)*dt_mult,axis=0)
+        return res
+    return LaplTrLN
+
+LaplTrLNFastD=LaplTrLNIntegrFuncFactory()
 
 def LaplTrLNODE2(u,v0):
     V0=1.0/v0
