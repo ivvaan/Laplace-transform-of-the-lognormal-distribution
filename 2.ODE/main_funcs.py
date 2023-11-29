@@ -65,12 +65,11 @@ def CM(rm,i):
         expr=expr.subs(x**n,rm(n))
     return sp.simplify(expr)
 
-def CMgenerator(rm,is_MGF=False):
+def CMgenerator(rm):
     '''
-    returns the function generating central moments for given MGF or raw moments generator
+    returns the function generating central moments for raw moments generator - rm
     '''
-    generator=RMgenerator(rm) if is_MGF else rm
-    return lambda i:CM(generator,i)
+    return lambda i:CM(rm,i)
 
 def DRM(MGF,i):
     '''
