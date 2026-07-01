@@ -50,8 +50,8 @@ def CDF_accuracy_plot(v: float,func_list, inv_deg=9, spread:float = 3.,accuracy_
 
 def LT_plot(v: float,func_list, spread:float = 3.,accuracy_only: bool =False):
     s0=np.sqrt(v)
-    T=np.logspace(-spread*s0,spread*s0,129,base=np.e)
-    title=f'σ={s0:.3f} x-range (logarithmic scale) is ±{spread}σ '
+    T=np.logspace(-spread,spread,129,base=np.e)
+    title=f'σ={s0:.3f} u-range (logarithmic scale) is exp(±{spread}) '
 
     N=len(func_list)
     width = lambda i: 1.*(N-i)+0.5
