@@ -49,7 +49,8 @@ def CDF_accuracy_plot(v: float,func_list, inv_deg=9, spread:float = 3.,accuracy_
 #),9,4,True)
 
 
-def LT_plot(v: float,func_list, spread:float = 3., npoints:int=129,accuracy_only: bool =False, linear: bool =False):
+def LT_plot(v: float,func_list, spread:float = 3., npoints:int=129,accuracy_only: bool =False, 
+            linear: bool =False, print_more:bool = False):
     s0=np.sqrt(v)
     if linear:
         T=np.linspace(0,np.pow(10,spread),npoints)
@@ -80,7 +81,7 @@ def LT_plot(v: float,func_list, spread:float = 3., npoints:int=129,accuracy_only
         plt.legend(loc='lower right')
         plt.show()
     
-    plt.title('relative diff curve to base \n'+title)
+    plt.title('relative logarithmic accuracy\n'+title)
     for i,(descr,_) in enumerate(func_list):
         if(i==0):
             continue
@@ -89,11 +90,14 @@ def LT_plot(v: float,func_list, spread:float = 3., npoints:int=129,accuracy_only
             diff=log_curve/log_base - 1
         else:
             diff=np.abs(log_curve/log_base - 1)
-        head=np.median(diff[:15])
-        tail=np.median(diff[-16:-1])
-        worse=np.max(diff)
-        avr=np.mean(diff)
-        plt.plot(T[linear:],diff, linewidth=width(i), label=descr+f' h:{head:.2g} t:{tail:.2g} w:{worse:.2g} a:{avr:.2g}')        
+        more_info='';
+        if print_more:
+            head=np.median(diff[:15])
+            tail=np.median(diff[-16:-1])
+            worse=np.max(diff)
+            avr=np.mean(diff)
+            more_info=f' h:{head:.2g} t:{tail:.2g} w:{worse:.2g} a:{avr:.2g}'
+        plt.plot(T[linear:],diff, linewidth=width(i), label=descr+more_info)        
     
     plt.xlabel('u')
     plt.legend(loc='lower right')
